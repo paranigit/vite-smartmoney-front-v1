@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NumericFormat } from "react-number-format";
-import { Account, AccountParameters } from "../components/AccountInfo";
+import { AccountParameters } from "../components/AccountInfo";
 import BsFormSelect from "../components/bootstrap/BsFormSelect";
 import moment from "moment";
 

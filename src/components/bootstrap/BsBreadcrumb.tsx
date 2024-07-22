@@ -1,6 +1,6 @@
 import { BreadcrumbItem } from "react-bootstrap";
 import Breadcrumb from "react-bootstrap/Breadcrumb";
-import { Link, Location, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export interface BsBreadcrumbProps {
   items: {

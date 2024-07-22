@@ -1,14 +1,9 @@
 /** React Bootstrap */
-import Spinner from "react-bootstrap/Spinner";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Dropdown from "react-bootstrap/Dropdown";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
-import { useEffect, useState } from "react";
-import { Account } from "../components/AccountInfo";
 
 export default function PageAddAccount() {
   const formik = useFormik({
@@ -59,36 +54,5 @@ export default function PageAddAccount() {
         </Form>
       </Container>
     </>
-  );
-  return (
-    <form onSubmit={formik.handleSubmit}>
-      <label htmlFor="account_id">First Name</label>
-      <input
-        id="account_id"
-        type="text"
-        {...formik.getFieldProps("account_id")}
-      />
-      {formik.touched.account_id && formik.errors.account_id ? (
-        <div>{formik.errors.account_id}</div>
-      ) : null}
-
-      <label htmlFor="account_name">Last Name</label>
-      <input
-        id="account_name"
-        type="text"
-        {...formik.getFieldProps("account_name")}
-      />
-      {formik.touched.account_name && formik.errors.account_name ? (
-        <div>{formik.errors.account_name}</div>
-      ) : null}
-
-      <label htmlFor="email">Email Address</label>
-      <input id="email" type="email" {...formik.getFieldProps("email")} />
-      {formik.touched.email && formik.errors.email ? (
-        <div>{formik.errors.email}</div>
-      ) : null}
-
-      <button type="submit">Submit</button>
-    </form>
   );
 }
