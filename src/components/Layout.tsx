@@ -16,7 +16,7 @@ export default function Layout() {
           <Outlet />
         </Container>
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 }

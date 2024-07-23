@@ -1,7 +1,5 @@
+import Container from "react-bootstrap/Container";
+
 export default function Footer() {
-  return (
-    <>
-      <p>Footer</p>
-    </>
-  );
+  return <Container fluid className="mt-5"></Container>;
 }
