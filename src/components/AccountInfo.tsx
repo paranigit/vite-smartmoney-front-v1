@@ -21,28 +21,12 @@ export type AccountParameters = {
   insertedOn: string;
 };
 
-export interface AccountSetProps {
-  account: Account;
-  onChange: (account: Account, action: string) => void;
-  displayAs: string;
-}
+// export interface AccountSetProps {
+//   account: Account;
+//   onChange: (account: Account, action: string) => void;
+//   displayAs: string;
+// }
 
-export default function AccountInfo({
-  account,
-  onChange,
-  displayAs,
-}: AccountSetProps) {
-  if ((displayAs = "rows")) {
-    return (
-      <tr>
-        <td>{account.account_id}</td>
-        <td>
-          <button onClick={() => onChange(account, "edit")}>Edit</button>
-          <button onClick={() => onChange(account, "delete")}>Edit</button>
-        </td>
-      </tr>
-    );
-  }
-
+export default function AccountInfo() {
   return <></>;
 }
