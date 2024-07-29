@@ -38,8 +38,8 @@ ChartJS.register(
 );
 
 export default function PageGraph() {
-  const [accountSets, setAccountSets] = useState<string[]>([]);
-  const [accountSetSelected, setAccountSetSelected] = useState<number>(-1);
+  const [accountsets, setAccountsets] = useState<string[]>([]);
+  const [accountsetSelected, setaccountsetSelected] = useState<number>(-1);
   const [displayChart, setDisplayChart] = useState(true);
   const [statusParameterSelected, setStatusParameterSelected] =
     useState<number>(-1);
@@ -60,15 +60,20 @@ export default function PageGraph() {
   });
 
   // Functions
-  const getAccountSets = async () => {
-    // console.log("getAccountSets");
+  const getaccountsets = async () => {
+    console.log("getaccountsets");
     fetch(
-      "https://brqob3sip5oc3i56vzigoeua3u0knvdl.lambda-url.eu-west-2.on.aws"
+      "https://33qbh4wk7y7bd4rdhylok5er4a0ftbbq.lambda-url.eu-west-2.on.aws/?action=read&accountset-ids-only=true"
     )
       .then((response) => response.json()) // Fetch JSON data
-      // .then((jsondata) => console.log(jsondata["accountsets"]))
-      .then((jsondata) => setAccountSets([...jsondata["accountsets"]]))
-      .catch((err) => console.log(err));
+      //   .then((jsondata) => console.log(jsondata["accountsets"]))
+      .then((jsondata) => {
+        setAccountsets([...jsondata["accountsets"], "ALLSETS"]);
+      })
+      .catch((err) => {
+        console.log(err);
+        setAccountsets([]);
+      });
   };
 
   // const getAccounts = async (accountset: string) => {
@@ -89,7 +94,7 @@ export default function PageGraph() {
 
   //   API call to fetch data
   const getGraphPoints = async () => {
-    if (accountSetSelected > -1 && statusParameterSelected > -1) {
+    if (accountsetSelected > -1 && statusParameterSelected > -1) {
       try {
         let fetch_from_6hrs = moment().subtract(6, "hours");
         let fetch_from_iso = fetch_from_6hrs
@@ -101,22 +106,24 @@ export default function PageGraph() {
             .format("YYYY-MM-DDTHH:mm:SSSZZ"),
           // fetch_from_iso: "2024-02-28T14:16:45.720766+00:00",
           // fetch_from_iso: fetch_from.utc().format("YYYY-MM-DDTHH:mm:SSSZZ"),
-          accountset: accountSets[accountSetSelected],
+          accountset: accountsets[accountsetSelected],
           status_parameter: statusParameters[statusParameterSelected],
         };
         console.log(JSON.stringify(params));
         fetch(
           "https://f2xuavolazelhbbfrrnlmf2hkq0sjdak.lambda-url.eu-west-2.on.aws/?fetch_from_iso=" +
             fetch_from_iso +
-            "&accountset=" +
-            accountSets[accountSetSelected] +
+            "&accountset_id=" +
+            accountsets[accountsetSelected] +
             "&status_parameter=" +
             statusParameters[statusParameterSelected]
         )
           .then((response) => response.json()) // Fetch JSON data
           .then((jsondata) => {
             console.log(jsondata);
-            if (jsondata.content) {
+            if (jsondata["error"]) {
+              setDisplayChart(true);
+            } else {
               setStatusData(jsondata.content);
               setDisplayChart(true);
             }
@@ -129,12 +136,12 @@ export default function PageGraph() {
 
   // For componentDidMount
   useEffect(() => {
-    getAccountSets();
+    getaccountsets();
   }, []);
 
   // For componentDidUpdate + componentWillUnmount
   useEffect(() => {
-    if (statusParameterSelected > -1 && accountSetSelected > -1) {
+    if (statusParameterSelected > -1 && accountsetSelected > -1) {
       setDisplayChart(false);
       getGraphPoints();
       // let intervalId = setInterval(getGraphPoints, 60000);
@@ -144,14 +151,14 @@ export default function PageGraph() {
         // clearInterval(intervalId);
       };
     }
-  }, [statusParameterSelected, accountSetSelected]);
+  }, [statusParameterSelected, accountsetSelected]);
 
-  const AccountSetSelector = () => {
-    return accountSets.length > 0 ? (
+  const accountsetSelector = () => {
+    return accountsets.length > 0 ? (
       <BsFormSelect
-        title="Select AccountSet"
-        options={accountSets}
-        onChange={(e) => setAccountSetSelected(e)}
+        title="Select accountset"
+        options={accountsets}
+        onChange={(e) => setaccountsetSelected(e)}
       ></BsFormSelect>
     ) : (
       <div className="py-5">
@@ -183,7 +190,7 @@ export default function PageGraph() {
       <h5 className="py-3">Status Parameters</h5>
       <Container fluid>
         <Row>
-          <Col>{AccountSetSelector()}</Col>
+          <Col>{accountsetSelector()}</Col>
           <Col>
             <BsFormSelect
               title="Select Parameter"

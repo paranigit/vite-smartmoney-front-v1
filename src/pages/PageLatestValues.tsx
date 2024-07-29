@@ -35,7 +35,6 @@ export default function PageLatestValues() {
   };
 
   const getLatestValues = async (accountset_id: string) => {
-    console.log("getLatestValues");
     setDisplayTable(false);
     fetch(
       "https://6czzalumjfxq2uvrm5nlogxlzy0ejegb.lambda-url.eu-west-2.on.aws?accountset_id=" +
