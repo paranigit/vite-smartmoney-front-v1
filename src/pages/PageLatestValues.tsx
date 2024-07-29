@@ -12,23 +12,26 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
 export default function PageLatestValues() {
-  const [accountSets, setAccountSets] = useState<string[]>([]);
+  const [accountsets, setAccountsets] = useState<string[]>([]);
   const [accountSetSelected, setAccountSetSelected] = useState<number>(-1);
   const [ParametersList, setParametersList] = useState<AccountParameters[]>([]);
   const [displayTable, setDisplayTable] = useState(true);
 
   // Functions
-  const getAccountSets = async () => {
-    // console.log("getAccountSets");
+  const getAccountsets = async () => {
+    console.log("getAccountsets");
     fetch(
-      "https://brqob3sip5oc3i56vzigoeua3u0knvdl.lambda-url.eu-west-2.on.aws"
+      "https://33qbh4wk7y7bd4rdhylok5er4a0ftbbq.lambda-url.eu-west-2.on.aws/?action=read&accountset-ids-only=true"
     )
       .then((response) => response.json()) // Fetch JSON data
-      // .then((jsondata) => console.log(jsondata["accountsets"]))
-      .then((jsondata) =>
-        setAccountSets([...jsondata["accountsets"], "ALLSETS"])
-      )
-      .catch((err) => console.log(err));
+      //   .then((jsondata) => console.log(jsondata["accountsets"]))
+      .then((jsondata) => {
+        setAccountsets([...jsondata["accountsets"], "ALLSETS"]);
+      })
+      .catch((err) => {
+        console.log(err);
+        setAccountsets([]);
+      });
   };
 
   const getLatestValues = async (accountset: string) => {
@@ -51,17 +54,17 @@ export default function PageLatestValues() {
 
   useEffect(() => {
     // console.log("useEffect called.");
-    getAccountSets();
+    getAccountsets();
     if (accountSetSelected > -1) {
-      getLatestValues(accountSets[accountSetSelected]);
+      getLatestValues(accountsets[accountSetSelected]);
     }
   }, [accountSetSelected]);
 
   const AccountSetSelector = () => {
-    return accountSets.length > 0 ? (
+    return accountsets.length > 0 ? (
       <BsFormSelect
         title="Select AccountSet"
-        options={accountSets}
+        options={accountsets}
         onChange={(e) => setAccountSetSelected(e)}
       ></BsFormSelect>
     ) : (
