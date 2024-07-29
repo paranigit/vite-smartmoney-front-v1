@@ -6,7 +6,7 @@ import PageGraph from "../pages/PageGraph";
 import PageLatestValues from "../pages/PageLatestValues";
 import PageAddAccount from "../pages/PageAddAccount";
 import PageAccountsetLinks from "../pages/PageAccountsetLinks";
-import PageAddAccountset from "../pages/pageAddAccountset";
+import PageAddAccountsets from "../pages/pageAddAccountset";
 import PageAccountsets from "../pages/PageAccountsets";
 
 const Router = createBrowserRouter([
@@ -18,7 +18,7 @@ const Router = createBrowserRouter([
       { path: "/accounts", element: <PageAccounts /> },
       { path: "/accounts-add", element: <PageAddAccount /> },
       { path: "/accountsets", element: <PageAccountsets /> },
-      { path: "/accountsets-add", element: <PageAddAccountset /> },
+      { path: "/accountsets-add", element: <PageAddAccountsets /> },
       {
         path: "/accountset-links",
         element: <PageAccountsetLinks />,
