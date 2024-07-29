@@ -83,7 +83,7 @@ export default function PageAddAccountset() {
         <h4 className="py-3">Add Accountset</h4>
         <Form onSubmit={formik.handleSubmit}>
           <Form.Group className="mb-3" controlId="accountForm.Accountset">
-            <Form.Label>Accountset</Form.Label>
+            <Form.Label>Accountset Id</Form.Label>
             <Form.Control
               type="text"
               isInvalid={

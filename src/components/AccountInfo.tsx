@@ -8,7 +8,7 @@ export type Account = {
 };
 
 export type AccountParameters = {
-  account_set: string;
+  accountset_id: string;
   account_id: string;
   account_name: string;
   investment: number;

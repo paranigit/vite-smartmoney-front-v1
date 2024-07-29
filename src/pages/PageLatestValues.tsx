@@ -34,12 +34,12 @@ export default function PageLatestValues() {
       });
   };
 
-  const getLatestValues = async (accountset: string) => {
+  const getLatestValues = async (accountset_id: string) => {
     console.log("getLatestValues");
     setDisplayTable(false);
     fetch(
-      "https://6czzalumjfxq2uvrm5nlogxlzy0ejegb.lambda-url.eu-west-2.on.aws?accountset=" +
-        accountset
+      "https://6czzalumjfxq2uvrm5nlogxlzy0ejegb.lambda-url.eu-west-2.on.aws?accountset_id=" +
+        accountset_id
     )
       .then((response) => response.json()) // Fetch JSON data
       // .then((jsondata) => console.log(jsondata))
@@ -84,8 +84,8 @@ export default function PageLatestValues() {
           <thead>
             <tr>
               <th>#</th>
-              <th>Accountset</th>
-              <th>Account</th>
+              <th>Accountset Id</th>
+              <th>Account Id</th>
               <th>Name</th>
               {/* <th scope="col">Last updated date</th> */}
               <th>Last updated</th>
@@ -101,7 +101,7 @@ export default function PageLatestValues() {
             {ParametersList.map((item, idx) => (
               <tr className="status-param-table" key={idx}>
                 <th scope="row">{idx + 1}</th>
-                <td>{item["account_set"]}</td>
+                <td>{item["accountset_id"]}</td>
                 <td>{item["account_id"]}</td>
                 <td>{item["account_name"]}</td>
                 <td>

@@ -88,9 +88,9 @@ export default function PageAccountsetLinks() {
           <thead>
             <tr className="status-param-table">
               <th scope="col">#</th>
-              <th scope="col">Accountset</th>
-              <th scope="col">Account</th>
-              <th scope="col">Name</th>
+              <th scope="col">Accountset Id</th>
+              <th scope="col">Account Id</th>
+              <th scope="col">Account Name</th>
               {/* <th scope="col">Last updated date</th> */}
               <th scope="col">Investment</th>
             </tr>
