@@ -40,7 +40,7 @@ export default function PageAccounts() {
       method: "POST",
       headers: {},
       body: JSON.stringify({
-        accountset_id: account_id,
+        account_id: account_id,
       }),
     };
     fetch(
