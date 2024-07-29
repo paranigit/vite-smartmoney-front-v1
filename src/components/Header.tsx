@@ -26,6 +26,9 @@ export default function Header() {
               <NavDropdown.Item href="/accountsets">
                 Accountsets
               </NavDropdown.Item>
+              <NavDropdown.Item href="/accountset-links">
+                AccountsetLinks
+              </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link href="/latestvalues">Latest Values</Nav.Link>
             <Nav.Link href="/graph">Graph</Nav.Link>

@@ -1,5 +1,5 @@
 export type Account = {
-  account_id: number | undefined;
+  account_id: string;
   account_name: string;
   accountsets: string[];
   is_active: boolean;
@@ -9,7 +9,7 @@ export type Account = {
 
 export type AccountParameters = {
   account_set: string;
-  account_id: number;
+  account_id: string;
   account_name: string;
   investment: number;
   balance: number;
@@ -19,6 +19,12 @@ export type AccountParameters = {
   accountNo: number;
   closedpnl: number;
   insertedOn: string;
+};
+
+export type Accountset = {
+  accountset_id: string;
+  accountset_name: string;
+  category: string;
 };
 
 // export interface AccountSetProps {

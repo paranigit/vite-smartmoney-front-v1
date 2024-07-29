@@ -13,7 +13,6 @@ export default function BsBreadcrumb() {
   const location = useLocation();
   const { pathname } = location;
   const segments = pathname === "/" ? [""] : pathname.split("/");
-  console.log(segments);
   let url = "";
   const breadcrumbLinks = segments.map((seg, i) => {
     url += i === 0 ? "/" : i === 1 ? seg : "/" + seg;

@@ -1,140 +1,175 @@
 import { useEffect, useState } from "react";
-import { NumericFormat } from "react-number-format";
-import { Account } from "../components/AccountInfo";
-import BsFormSelect from "../components/bootstrap/BsFormSelect";
+import { Accountset } from "../components/AccountInfo";
 
 /** React Bootstrap */
 import Spinner from "react-bootstrap/Spinner";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Modal from "react-bootstrap/Modal";
 
-export default function PageAccountSets() {
-  const [accountSets, setAccountSets] = useState<string[]>([]);
-  const [accountSetSelected, setAccountSetSelected] = useState<number>(-1);
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [displayTable, setDisplayTable] = useState(true);
+export default function PageAccountsets() {
+  const [accountsets, setAccountsets] = useState<Accountset[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [accountsetId, setAccountsetId] = useState<string>("");
 
   // Functions
   const getAccountSets = async () => {
     console.log("getAccountSets");
+    setIsLoading(true);
     fetch(
-      "https://brqob3sip5oc3i56vzigoeua3u0knvdl.lambda-url.eu-west-2.on.aws/"
+      "https://33qbh4wk7y7bd4rdhylok5er4a0ftbbq.lambda-url.eu-west-2.on.aws/?action=read"
     )
       .then((response) => response.json()) // Fetch JSON data
       // .then((jsondata) => console.log(jsondata["accountsets"]))
-      .then((jsondata) => setAccountSets(jsondata["accountsets"]))
-      .catch((err) => console.log(err));
+      .then((jsondata) => {
+        setAccountsets(jsondata["accountsets"]);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setAccountsets([]);
+        setIsLoading(false);
+      });
   };
 
-  const getAccounts = async (accountset: string) => {
-    console.log("getAccounts");
-    setDisplayTable(false);
+  const deleteAccountset = async (accountset_id: string) => {
+    const requestOptions = {
+      method: "POST",
+      headers: {},
+      body: JSON.stringify({
+        accountset_id: accountset_id,
+      }),
+    };
     fetch(
-      "https://6ndhiz7dnsldvktfgpsqi2d72a0xehwm.lambda-url.eu-west-2.on.aws/?accountset=" +
-        accountset
+      "https://33qbh4wk7y7bd4rdhylok5er4a0ftbbq.lambda-url.eu-west-2.on.aws/?action=delete",
+      requestOptions
     )
-      .then((response) => response.json()) // Fetch JSON data
-      // .then((jsondata) => console.log(jsondata))
+      .then((response) => response.json())
       .then((jsondata) => {
-        if (jsondata.accounts) {
-          setAccounts(jsondata.accounts);
-          setDisplayTable(true);
-        }
+        console.log(jsondata);
+        setShowDeleteModal(false);
+        getAccountSets();
+        // setAlertMessage(jsondata["message"]);
+        // setAlertType("success");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setShowDeleteModal(false);
+        // setAlertMessage(err["message"]);
+        // setAlertType("danger");
+      });
   };
+
+  const popupDeletionModal = (accountset_id: string) => {
+    setAccountsetId(accountset_id);
+    setShowDeleteModal(true);
+  };
+  const handleClose = () => setShowDeleteModal(false);
 
   useEffect(() => {
-    // console.log("useEffect called.");
+    console.log("useEffect called.");
     getAccountSets();
-    if (accountSetSelected > -1) {
-      getAccounts(accountSets[accountSetSelected]);
-    }
-  }, [accountSetSelected]);
+  }, []);
 
-  const AccountSetSelector = () => {
-    return accountSets.length > 0 ? (
-      <BsFormSelect
-        title="Select AccountSet"
-        options={accountSets}
-        onChange={(e) => setAccountSetSelected(e)}
-      ></BsFormSelect>
-    ) : (
+  const RenderAccountsetsTable = () => {
+    return isLoading ? (
       <div className="py-5">
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
       </div>
-    );
-  };
-
-  const RenderAccountsTable = () => {
-    return displayTable ? (
+    ) : (
       <>
         <table className="table table-striped">
           <thead>
             <tr className="status-param-table">
               <th scope="col">#</th>
-              <th scope="col">Accountset</th>
-              <th scope="col">Account</th>
-              <th scope="col">Name</th>
+              <th scope="col">Accountset Id</th>
+              <th scope="col">Accountset Name</th>
+              <th scope="col">Category</th>
               {/* <th scope="col">Last updated date</th> */}
-              <th scope="col">Investment</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
-            {accounts.length === 0 && (
+            {accountsets.length === 0 && (
               <tr>
-                <td>No items found!</td>
+                <td colSpan={5}>No items found!</td>
               </tr>
             )}
-            {accounts.map((item, idx) => (
+            {accountsets.map((item, idx) => (
               <tr className="status-param-table" key={idx}>
                 <td scope="row">{idx + 1}</td>
-                <td>{item["accountsets"]}</td>
-                <td>{item["account_id"]}</td>
-                <td>{item["account_name"]}</td>
-                <td className="text-end">
-                  <NumericFormat
-                    value={item["investment"]}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    prefix={"$"}
-                  />
+                <td>{item["accountset_id"]}</td>
+                <td>{item["accountset_name"]}</td>
+                <td>{item["category"]}</td>
+                <td>
+                  <ButtonGroup aria-label="Basic example">
+                    <Button variant="primary" className="px-4">
+                      Edit
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => popupDeletionModal(item["accountset_id"])}
+                    >
+                      Delete
+                    </Button>
+                  </ButtonGroup>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </>
-    ) : (
-      <div className="py-5">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </div>
+    );
+  };
+
+  const DeleteModal = () => {
+    return (
+      <Modal show={showDeleteModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Deletion confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Would you like to delete - {accountsetId}?</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => deleteAccountset(accountsetId)}
+          >
+            Yes
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            No
+          </Button>
+        </Modal.Footer>
+      </Modal>
     );
   };
 
   return (
     <>
-      <h5 className="py-3">Accountsets</h5>
       <Container fluid>
+        {DeleteModal()}
         <Row>
-          <Col>{AccountSetSelector()}</Col>
-          {/* <Col xs={5}>
-            <Button variant="primary" href="" className="mx-3">
-              Add Account
-            </Button>
-            <Button variant="secondary" href="/accountsets/add">
+          <Col>
+            <h5>Accountsets</h5>
+          </Col>
+          <Col xs={5}>
+            <Button
+              variant="primary"
+              href="/accountsets-add"
+              className="mx-3 float-end"
+            >
               Add Accountset
             </Button>
-          </Col> */}
+          </Col>
         </Row>
+        {RenderAccountsetsTable()}
       </Container>
-
-      {accountSetSelected > -1 ? RenderAccountsTable() : <></>}
     </>
   );
 }
