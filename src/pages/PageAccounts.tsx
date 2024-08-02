@@ -163,7 +163,7 @@ export default function PageAccounts() {
           <Col xs={5}>
             <Button
               variant="primary"
-              href="/accounts-add"
+              href="/account-add"
               className="mx-3 float-end"
             >
               Add Account

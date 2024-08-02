@@ -8,6 +8,7 @@ import PageAddAccount from "../pages/PageAddAccount";
 import PageAccountsetLinks from "../pages/PageAccountsetLinks";
 import PageAddAccountsets from "../pages/pageAddAccountset";
 import PageAccountsets from "../pages/PageAccountsets";
+import PageEditAccount from "../pages/pageEditAccount";
 
 const Router = createBrowserRouter([
   {
@@ -16,7 +17,11 @@ const Router = createBrowserRouter([
       { path: "/", element: <PageHome /> },
       { path: "/home", element: <PageHome /> },
       { path: "/accounts", element: <PageAccounts /> },
-      { path: "/accounts-add", element: <PageAddAccount /> },
+      { path: "/account-add", element: <PageAddAccount /> },
+      {
+        path: "/account-edit/:account_id",
+        element: <PageEditAccount />,
+      },
       { path: "/accountsets", element: <PageAccountsets /> },
       { path: "/accountsets-add", element: <PageAddAccountsets /> },
       {

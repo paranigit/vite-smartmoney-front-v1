@@ -43,11 +43,11 @@ export default function PageAccountsetLinks() {
   const getAccounts = async (accountset: string) => {
     setDisplayTable(false);
     fetch(
-      "https://6ndhiz7dnsldvktfgpsqi2d72a0xehwm.lambda-url.eu-west-2.on.aws/?accountset=" +
+      "https://3gqf36yau6b2bnuwg3x6y6w5bq0ohikb.lambda-url.eu-west-2.on.aws/?action=read&accountset_id=" +
         accountset
     )
       .then((response) => response.json()) // Fetch JSON data
-      // .then((jsondata) => console.log(jsondata))
+      //   .then((jsondata) => console.log(jsondata))
       .then((jsondata) => {
         if (jsondata.accounts) {
           setAccounts(jsondata.accounts);
