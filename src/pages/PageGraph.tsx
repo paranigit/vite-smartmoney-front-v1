@@ -76,7 +76,7 @@ export default function PageGraph() {
           // min: minDate,
           // max: maxDate,
           displayFormats: {
-            hour: "DD/MMM HH:MM",
+            hour: "DD-MMM HH:MM",
           },
           // parser: function (utcMoment) {
           //   return utcMoment.utcOffset("+0100");
@@ -84,62 +84,6 @@ export default function PageGraph() {
         },
       },
     },
-  };
-
-  const ChartOptions2 = {
-    responsive: true, //It make the chart responsive
-    //This plugin will display Title of chart
-    plugins: {
-      title: {
-        display: true,
-        text: statusParameters[statusParameterSelected],
-      },
-    },
-    scales: {
-      xAxes: [
-        {
-          type: "time",
-          time: {
-            displayFormats: {
-              day: "dd hh:mm",
-            },
-          },
-        },
-      ],
-    },
-    // scales: {
-    //   xAxes: {
-    //     type: "time",
-    //     time: {
-    //       unit: "hour",
-    //       // min: minDate,
-    //       // max: maxDate,
-    //       displayFormats: {
-    //         hour: "HH",
-    //       },
-    //       parser: function (utcMoment) {
-    //         return utcMoment.utcOffset("+0100");
-    //       },
-    //     },
-    //   },
-    // },
-    // scales: {
-    //   x: {
-    //     type: "time",
-    //     time: {
-    //       displayFormats: {
-    //         day: "dd hh:mm",
-    //       },
-    //     },
-    //     grid: {
-    //       tickColor: "red",
-    //     },
-    //     ticks: {
-    //       color: "blue",
-    //       source: "auto",
-    //     },
-    //   },
-    // },
   };
 
   // Functions
@@ -179,6 +123,7 @@ export default function PageGraph() {
           status_parameter: statusParameters[statusParameterSelected],
         };
         console.log(JSON.stringify(params));
+        setDisplayChart(true);
         fetch(
           "https://f2xuavolazelhbbfrrnlmf2hkq0sjdak.lambda-url.eu-west-2.on.aws/?fetch_from_iso=" +
             fetch_from_iso +
@@ -191,9 +136,9 @@ export default function PageGraph() {
           .then((jsondata) => {
             console.log(jsondata);
             if (jsondata["error"]) {
+              setParamDatasets([]);
             } else {
               setParamDatasets(jsondata.content["datasets"]);
-              setDisplayChart(true);
               setLoadingChart(false);
             }
           });
