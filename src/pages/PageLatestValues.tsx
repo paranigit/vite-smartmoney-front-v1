@@ -10,7 +10,6 @@ import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { date } from "yup";
 
 export default function PageLatestValues() {
   const [accountsets, setAccountsets] = useState<string[]>([]);
