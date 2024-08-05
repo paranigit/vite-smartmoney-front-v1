@@ -10,12 +10,14 @@ import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { date } from "yup";
 
 export default function PageLatestValues() {
   const [accountsets, setAccountsets] = useState<string[]>([]);
   const [accountSetSelected, setAccountSetSelected] = useState<number>(-1);
   const [ParametersList, setParametersList] = useState<AccountParameters[]>([]);
   const [displayTable, setDisplayTable] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   // Functions
   const getAccountsets = async () => {
@@ -34,17 +36,18 @@ export default function PageLatestValues() {
       });
   };
 
-  const getLatestValues = async (accountset_id: string) => {
-    setDisplayTable(false);
+  const getLatestValues = async () => {
+    // setDisplayTable(false);
     fetch(
       "https://6czzalumjfxq2uvrm5nlogxlzy0ejegb.lambda-url.eu-west-2.on.aws?accountset_id=" +
-        accountset_id
+        accountsets[accountSetSelected]
     )
       .then((response) => response.json()) // Fetch JSON data
       // .then((jsondata) => console.log(jsondata))
       .then((jsondata) => {
         if (jsondata.accounts) {
           setParametersList(jsondata.accounts);
+          setLastUpdated(new Date());
           setDisplayTable(true);
         }
       })
@@ -52,10 +55,15 @@ export default function PageLatestValues() {
   };
 
   useEffect(() => {
-    // console.log("useEffect called.");
     getAccountsets();
     if (accountSetSelected > -1) {
-      getLatestValues(accountsets[accountSetSelected]);
+      setDisplayTable(false);
+      getLatestValues();
+      let intervalId = setInterval(getLatestValues, 30000);
+      return () => {
+        console.log("clearing");
+        clearInterval(intervalId);
+      };
     }
   }, [accountSetSelected]);
 
@@ -78,6 +86,9 @@ export default function PageLatestValues() {
   const RenderAccountsTable = () => {
     return displayTable ? (
       <>
+        <p className="text-end">
+          Last Updated on: {lastUpdated.toLocaleTimeString()}
+        </p>
         {ParametersList.length === 0 && <p>No items found!</p>}
         <Table striped bordered hover className="my-3">
           <thead>

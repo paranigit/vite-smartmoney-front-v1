@@ -55,9 +55,7 @@ export default function PageGraph() {
     // "trades",
     // "usedmargin",
   ];
-  const [statusData, setStatusData] = useState({
-    datasets: [],
-  });
+
   const [paramDatasets, setParamDatasets] = useState<any[]>([]);
 
   const ChartOptions = {
@@ -68,22 +66,22 @@ export default function PageGraph() {
         text: statusParameters[statusParameterSelected],
       },
     },
-    scales: {
-      xAxes: {
-        type: "time",
-        time: {
-          unit: "hour",
-          // min: minDate,
-          // max: maxDate,
-          displayFormats: {
-            hour: "DD-MMM HH:MM",
-          },
-          // parser: function (utcMoment) {
-          //   return utcMoment.utcOffset("+0100");
-          // },
-        },
-      },
-    },
+    // scales: {
+    //   xAxes: {
+    //     type: "time",
+    //     time: {
+    //       unit: "hour",
+    //       // min: minDate,
+    //       // max: maxDate,
+    //       displayFormats: {
+    //         hour: "DD-MMM HH:MM",
+    //       },
+    //       // parser: function (utcMoment) {
+    //       //   return utcMoment.utcOffset("+0100");
+    //       // },
+    //     },
+    //   },
+    // },
   };
 
   // Functions
@@ -138,6 +136,10 @@ export default function PageGraph() {
             if (jsondata["error"]) {
               setParamDatasets([]);
             } else {
+              let datasets = jsondata.content["datasets"];
+              datasets.map((dataset: []) => {
+                console.log(dataset);
+              });
               setParamDatasets(jsondata.content["datasets"]);
               setLoadingChart(false);
             }
