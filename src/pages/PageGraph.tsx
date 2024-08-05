@@ -40,7 +40,8 @@ ChartJS.register(
 export default function PageGraph() {
   const [accountsets, setAccountsets] = useState<string[]>([]);
   const [accountsetSelected, setaccountsetSelected] = useState<number>(-1);
-  const [displayChart, setDisplayChart] = useState(true);
+  const [displayChart, setDisplayChart] = useState(false);
+  const [loadingChart, setLoadingChart] = useState(false);
   const [statusParameterSelected, setStatusParameterSelected] =
     useState<number>(-1);
   let statusParameters = [
@@ -55,9 +56,91 @@ export default function PageGraph() {
     // "usedmargin",
   ];
   const [statusData, setStatusData] = useState({
-    labels: [],
     datasets: [],
   });
+  const [paramDatasets, setParamDatasets] = useState<any[]>([]);
+
+  const ChartOptions = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: statusParameters[statusParameterSelected],
+      },
+    },
+    scales: {
+      xAxes: {
+        type: "time",
+        time: {
+          unit: "hour",
+          // min: minDate,
+          // max: maxDate,
+          displayFormats: {
+            hour: "DD/MMM HH:MM",
+          },
+          // parser: function (utcMoment) {
+          //   return utcMoment.utcOffset("+0100");
+          // },
+        },
+      },
+    },
+  };
+
+  const ChartOptions2 = {
+    responsive: true, //It make the chart responsive
+    //This plugin will display Title of chart
+    plugins: {
+      title: {
+        display: true,
+        text: statusParameters[statusParameterSelected],
+      },
+    },
+    scales: {
+      xAxes: [
+        {
+          type: "time",
+          time: {
+            displayFormats: {
+              day: "dd hh:mm",
+            },
+          },
+        },
+      ],
+    },
+    // scales: {
+    //   xAxes: {
+    //     type: "time",
+    //     time: {
+    //       unit: "hour",
+    //       // min: minDate,
+    //       // max: maxDate,
+    //       displayFormats: {
+    //         hour: "HH",
+    //       },
+    //       parser: function (utcMoment) {
+    //         return utcMoment.utcOffset("+0100");
+    //       },
+    //     },
+    //   },
+    // },
+    // scales: {
+    //   x: {
+    //     type: "time",
+    //     time: {
+    //       displayFormats: {
+    //         day: "dd hh:mm",
+    //       },
+    //     },
+    //     grid: {
+    //       tickColor: "red",
+    //     },
+    //     ticks: {
+    //       color: "blue",
+    //       source: "auto",
+    //     },
+    //   },
+    // },
+  };
 
   // Functions
   const getaccountsets = async () => {
@@ -76,21 +159,7 @@ export default function PageGraph() {
       });
   };
 
-  // const getAccounts = async (accountset: string) => {
-  //   console.log("getAccounts");
-  //   fetch(
-  //     "https://6ndhiz7dnsldvktfgpsqi2d72a0xehwm.lambda-url.eu-west-2.on.aws/?accountset=" +
-  //       accountset
-  //   )
-  //     .then((response) => response.json()) // Fetch JSON data
-  //     // .then((jsondata) => console.log(jsondata))
-  //     .then((jsondata) => {
-  //       if (jsondata.accounts) {
-  //         setAccounts(jsondata.accounts);
-  //       }
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
+  setInterval(() => {}, 5000);
 
   //   API call to fetch data
   const getGraphPoints = async () => {
@@ -122,10 +191,10 @@ export default function PageGraph() {
           .then((jsondata) => {
             console.log(jsondata);
             if (jsondata["error"]) {
-              setDisplayChart(true);
             } else {
-              setStatusData(jsondata.content);
+              setParamDatasets(jsondata.content["datasets"]);
               setDisplayChart(true);
+              setLoadingChart(false);
             }
           });
       } catch (e) {
@@ -143,6 +212,7 @@ export default function PageGraph() {
   useEffect(() => {
     if (statusParameterSelected > -1 && accountsetSelected > -1) {
       setDisplayChart(false);
+      setLoadingChart(true);
       getGraphPoints();
       // let intervalId = setInterval(getGraphPoints, 60000);
       // componentWillUnmount
@@ -155,11 +225,22 @@ export default function PageGraph() {
 
   const accountsetSelector = () => {
     return accountsets.length > 0 ? (
-      <BsFormSelect
-        title="Select accountset"
-        options={accountsets}
-        onChange={(e) => setaccountsetSelected(e)}
-      ></BsFormSelect>
+      <Row>
+        <Col>
+          <BsFormSelect
+            title="Select accountset"
+            options={accountsets}
+            onChange={(e) => setaccountsetSelected(e)}
+          ></BsFormSelect>
+        </Col>
+        <Col>
+          <BsFormSelect
+            title="Select Parameter"
+            options={statusParameters}
+            onChange={(e) => setStatusParameterSelected(e)}
+          ></BsFormSelect>
+        </Col>
+      </Row>
     ) : (
       <div className="py-5">
         <Spinner animation="border" role="status">
@@ -173,13 +254,19 @@ export default function PageGraph() {
     return (
       <div className="py-4">
         {displayChart ? (
-          <div className="py-4">
-            <Line data={statusData} height={130} />
-          </div>
+          loadingChart ? (
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          ) : (
+            <Line
+              data={{ datasets: paramDatasets }}
+              height={130}
+              options={ChartOptions}
+            />
+          )
         ) : (
-          <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
+          <></>
         )}
       </div>
     );
@@ -189,16 +276,7 @@ export default function PageGraph() {
     <>
       <h5 className="py-3">Status Parameters</h5>
       <Container fluid>
-        <Row>
-          <Col>{accountsetSelector()}</Col>
-          <Col>
-            <BsFormSelect
-              title="Select Parameter"
-              options={statusParameters}
-              onChange={(e) => setStatusParameterSelected(e)}
-            ></BsFormSelect>
-          </Col>
-        </Row>
+        {accountsetSelector()}
         <Container>{funcRenderChart()}</Container>
       </Container>
     </>
