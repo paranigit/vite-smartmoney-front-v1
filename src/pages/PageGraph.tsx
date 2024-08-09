@@ -72,9 +72,9 @@ export default function PageGraph() {
     },
     scales: {
       xAxes: {
-        type: "time",
+        type: "time" as const,
         time: {
-          unit: "hour",
+          unit: "hour" as const,
           // min: minDate,
           // max: maxDate,
           displayFormats: {
