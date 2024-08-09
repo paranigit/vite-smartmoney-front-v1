@@ -39,8 +39,8 @@ ChartJS.register(
 );
 
 export default function PageGraph() {
-  const [alert, setAlert] = useState<string>("");
-  // const [alertVarient, setAlertVarient] = useState<string>("");
+  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [alertVarient, setAlertVarient] = useState<string>("danger");
   // const [isLoading, setIsLoading] = useState<boolean>(false);
   const [accountsets, setAccountsets] = useState<string[]>([]);
   const [accountsetSelected, setaccountsetSelected] = useState<number>(-1);
@@ -139,6 +139,8 @@ export default function PageGraph() {
             console.log(jsondata);
             if (jsondata["error"]) {
               setParamDatasets([]);
+              setAlertMessage(jsondata["error"]);
+              setDisplayChart(false);
             } else {
               let datasets = jsondata.content["datasets"];
               datasets.map((dataset: []) => {
@@ -228,7 +230,7 @@ export default function PageGraph() {
 
   return (
     <>
-      <BsAlert variant="" message={alert}></BsAlert>
+      <BsAlert variant={alertVarient} message={alertMessage}></BsAlert>
       <h5 className="py-3">Status Parameters</h5>
       <Container fluid>
         {accountsetSelector()}
