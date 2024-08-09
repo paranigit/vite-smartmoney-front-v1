@@ -140,6 +140,7 @@ export default function PageGraph() {
             if (jsondata["error"]) {
               setParamDatasets([]);
               setAlertMessage(jsondata["error"]);
+              setAlertVarient("danger");
               setDisplayChart(false);
             } else {
               let datasets = jsondata.content["datasets"];
