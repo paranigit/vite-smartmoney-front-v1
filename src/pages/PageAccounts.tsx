@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
 import { Account } from "../components/AccountInfo";
 
@@ -16,6 +17,8 @@ export default function PageAccounts() {
   const [accountId, setAccountId] = useState<string>("");
   const [displayTable, setDisplayTable] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const navigate = useNavigate();
 
   // Functions
   const getAccounts = async () => {
@@ -128,7 +131,13 @@ export default function PageAccounts() {
                 </td>
                 <td className="text-end">
                   <ButtonGroup aria-label="Basic example">
-                    <Button variant="primary" className="px-4">
+                    <Button
+                      variant="primary"
+                      className="px-4"
+                      onClick={() =>
+                        navigate("/account-edit/" + item["account_id"])
+                      }
+                    >
                       Edit
                     </Button>
                     <Button

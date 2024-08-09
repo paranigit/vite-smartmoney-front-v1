@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import BsFormSelect from "../components/bootstrap/BsFormSelect";
+import BsAlert from "../components/bootstrap/BsAlert";
 import moment from "moment-timezone";
 
 /** React Bootstrap */
@@ -38,6 +39,9 @@ ChartJS.register(
 );
 
 export default function PageGraph() {
+  const [alert, setAlert] = useState<string>("");
+  // const [alertVarient, setAlertVarient] = useState<string>("");
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const [accountsets, setAccountsets] = useState<string[]>([]);
   const [accountsetSelected, setaccountsetSelected] = useState<number>(-1);
   const [displayChart, setDisplayChart] = useState(false);
@@ -66,22 +70,22 @@ export default function PageGraph() {
         text: statusParameters[statusParameterSelected],
       },
     },
-    // scales: {
-    //   xAxes: {
-    //     type: "time",
-    //     time: {
-    //       unit: "hour",
-    //       // min: minDate,
-    //       // max: maxDate,
-    //       displayFormats: {
-    //         hour: "DD-MMM HH:MM",
-    //       },
-    //       // parser: function (utcMoment) {
-    //       //   return utcMoment.utcOffset("+0100");
-    //       // },
-    //     },
-    //   },
-    // },
+    scales: {
+      xAxes: {
+        type: "time",
+        time: {
+          unit: "hour",
+          // min: minDate,
+          // max: maxDate,
+          displayFormats: {
+            hour: "DD-MMM HH:MM",
+          },
+          // parser: function (utcMoment: { utcOffset: (arg0: string) => any }) {
+          //   return utcMoment.utcOffset("+0100");
+          // },
+        },
+      },
+    },
   };
 
   // Functions
@@ -143,6 +147,9 @@ export default function PageGraph() {
               setParamDatasets(jsondata.content["datasets"]);
               setLoadingChart(false);
             }
+          })
+          .catch((err) => {
+            console.log(err);
           });
       } catch (e) {
         console.log(e);
@@ -221,6 +228,7 @@ export default function PageGraph() {
 
   return (
     <>
+      <BsAlert variant="" message={alert}></BsAlert>
       <h5 className="py-3">Status Parameters</h5>
       <Container fluid>
         {accountsetSelector()}

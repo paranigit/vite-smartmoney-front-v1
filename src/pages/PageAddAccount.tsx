@@ -51,7 +51,7 @@ export default function PageAddAccount() {
         .then((jsondata) => {
           console.log(jsondata);
           if (jsondata["error"]) {
-            setAlertMessage("Accountset cannot be added.");
+            setAlertMessage("Account cannot be added.");
             setAlertType("danger");
             setIsLoading(false);
           } else {
