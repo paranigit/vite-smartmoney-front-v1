@@ -11,6 +11,8 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Modal from "react-bootstrap/Modal";
+import BreadcrumbItem from "react-bootstrap/BreadcrumbItem";
+import Breadcrumb from "react-bootstrap/Breadcrumb";
 
 export default function PageAccounts() {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -164,7 +166,10 @@ export default function PageAccounts() {
 
   return (
     <>
-      <h5 className="py-3">Accounts</h5>
+      <Breadcrumb>
+        <BreadcrumbItem href={"/"}> Home</BreadcrumbItem>
+        <BreadcrumbItem active> Accounts</BreadcrumbItem>
+      </Breadcrumb>
       <Container fluid>
         {DeleteModal()}
         <Row>

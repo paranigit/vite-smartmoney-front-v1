@@ -12,7 +12,11 @@ export interface BsBreadcrumbProps {
 export default function BsBreadcrumb() {
   const location = useLocation();
   const { pathname } = location;
-  const segments = pathname === "/" ? [""] : pathname.split("/");
+  const pathModified = pathname.endsWith("/")
+    ? pathname.slice(0, -1)
+    : pathname;
+  const segments = pathModified === "" ? [""] : pathModified.split("/");
+  console.log(segments);
   let url = "";
   const breadcrumbLinks = segments.map((seg, i) => {
     url += i === 0 ? "/" : i === 1 ? seg : "/" + seg;
@@ -26,6 +30,8 @@ export default function BsBreadcrumb() {
       </BreadcrumbItem>
     );
   });
+
+  console.log(url);
 
   //   console.log(url);
 
