@@ -52,7 +52,18 @@ export default function PageLatestValues() {
       // .then((jsondata) => console.log(jsondata))
       .then((jsondata) => {
         if (jsondata.accounts) {
-          setLatestValues(jsondata.accounts);
+          console.log(sortConfig);
+          let sortedItems = [...jsondata.accounts];
+          sortedItems.sort((a, b) => {
+            if (a[sortConfig.key] < b[sortConfig.key]) {
+              return sortConfig.direction === "ascending" ? -1 : 1;
+            }
+            if (a[sortConfig.key] > b[sortConfig.key]) {
+              return sortConfig.direction === "ascending" ? 1 : -1;
+            }
+            return 0;
+          });
+          setLatestValues(sortedItems);
           setLastUpdated(new Date());
           setDisplayTable(true);
         }
@@ -62,6 +73,7 @@ export default function PageLatestValues() {
 
   // Sort fuctionality
   const requestSort = (key: keyof AccountParameters) => {
+    console.log(sortConfig);
     let direction = "ascending";
     if (
       sortConfig &&
@@ -70,8 +82,7 @@ export default function PageLatestValues() {
     ) {
       direction = "descending";
     }
-    console.log(key, direction);
-    setSortConfig({ key, direction });
+    setSortConfig({ key: key, direction: direction });
   };
 
   const getSortIcon = (key: keyof AccountParameters) => {
@@ -90,6 +101,7 @@ export default function PageLatestValues() {
   };
 
   useEffect(() => {
+    console.log(sortConfig);
     let sortedItems = [...latestValues];
     sortedItems.sort((a, b) => {
       if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -101,16 +113,18 @@ export default function PageLatestValues() {
       return 0;
     });
     setLatestValues(sortedItems);
-  }, [sortConfig, latestValues]);
+  }, [sortConfig]);
 
   useEffect(() => {
     getAccountsets();
     if (accountSetSelected > -1) {
       setDisplayTable(false);
       getLatestValues();
-      let intervalId = setInterval(getLatestValues, 30000);
+      let intervalId = setInterval(function () {
+        getLatestValues();
+      }, 30000);
       return () => {
-        console.log("clearing");
+        // Clearning setInterval
         clearInterval(intervalId);
       };
     }
