@@ -18,6 +18,7 @@ export default function PageLatestValues() {
   const [accountsets, setAccountsets] = useState<string[]>([]);
   const [accountSetSelected, setAccountSetSelected] = useState<number>(-1);
   const [latestValues, setLatestValues] = useState<AccountParameters[]>([]);
+  const [sortedValues, setSortedValues] = useState<AccountParameters[]>([]);
   const [displayTable, setDisplayTable] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
@@ -52,18 +53,7 @@ export default function PageLatestValues() {
       // .then((jsondata) => console.log(jsondata))
       .then((jsondata) => {
         if (jsondata.accounts) {
-          console.log(sortConfig);
-          let sortedItems = [...jsondata.accounts];
-          sortedItems.sort((a, b) => {
-            if (a[sortConfig.key] < b[sortConfig.key]) {
-              return sortConfig.direction === "ascending" ? -1 : 1;
-            }
-            if (a[sortConfig.key] > b[sortConfig.key]) {
-              return sortConfig.direction === "ascending" ? 1 : -1;
-            }
-            return 0;
-          });
-          setLatestValues(sortedItems);
+          setLatestValues(jsondata.accounts);
           setLastUpdated(new Date());
           setDisplayTable(true);
         }
@@ -73,7 +63,6 @@ export default function PageLatestValues() {
 
   // Sort fuctionality
   const requestSort = (key: keyof AccountParameters) => {
-    console.log(sortConfig);
     let direction = "ascending";
     if (
       sortConfig &&
@@ -101,7 +90,23 @@ export default function PageLatestValues() {
   };
 
   useEffect(() => {
+    getAccountsets();
+    if (accountSetSelected > -1) {
+      setDisplayTable(false);
+      getLatestValues();
+      let intervalId = setInterval(function () {
+        getLatestValues();
+      }, 30000);
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [accountSetSelected]);
+
+  useEffect(() => {
+    // console.log(latestValues);
     console.log(sortConfig);
+    setDisplayTable(false);
     let sortedItems = [...latestValues];
     sortedItems.sort((a, b) => {
       if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -112,23 +117,10 @@ export default function PageLatestValues() {
       }
       return 0;
     });
-    setLatestValues(sortedItems);
-  }, [sortConfig]);
-
-  useEffect(() => {
-    getAccountsets();
-    if (accountSetSelected > -1) {
-      setDisplayTable(false);
-      getLatestValues();
-      let intervalId = setInterval(function () {
-        getLatestValues();
-      }, 30000);
-      return () => {
-        // Clearning setInterval
-        clearInterval(intervalId);
-      };
-    }
-  }, [accountSetSelected]);
+    // console.log(sortedItems);
+    setSortedValues(sortedItems);
+    setDisplayTable(true);
+  }, [latestValues, sortConfig]);
 
   const AccountSetSelector = () => {
     return accountsets.length > 0 ? (
@@ -152,7 +144,7 @@ export default function PageLatestValues() {
         <p className="text-end">
           Last Updated on: {lastUpdated.toLocaleTimeString()}
         </p>
-        {latestValues.length === 0 && <p>No items found!</p>}
+        {sortedValues.length === 0 && <p>No items found!</p>}
         <Table striped bordered hover className="my-3">
           <thead>
             <tr>
@@ -225,7 +217,7 @@ export default function PageLatestValues() {
             </tr>
           </thead>
           <tbody>
-            {latestValues.map((item, idx) => (
+            {sortedValues.map((item, idx) => (
               <tr className="status-param-table" key={idx}>
                 <th scope="row">{idx + 1}</th>
                 <td>{item["accountset_id"]}</td>
